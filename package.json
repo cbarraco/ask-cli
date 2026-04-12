@@ -1,0 +1,14 @@
+{
+  "name": "ask-cli",
+  "version": "1.0.0",
+  "description": "Pipe-friendly CLI for adding AI into Unix/PowerShell pipelines via Ollama",
+  "type": "module",
+  "bin": {
+    "ask": "./ask.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": ["cli", "ai", "ollama", "pipeline", "unix"],
+  "license": "MIT"
+}
