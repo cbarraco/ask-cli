@@ -26,6 +26,24 @@ ask [options] -p "prompt"
 | `--raw` | | | Skip output trimming and fence-stripping |
 | `--ollama-url` | | `http://localhost:11434` | Ollama endpoint |
 
+## Config file
+
+You can set defaults in `~/.ask-cli/config.json` so you don't have to pass flags every time:
+
+```json
+{
+  "model": "llama3.2",
+  "ollamaUrl": "http://192.168.1.10:11434"
+}
+```
+
+| Key | Description |
+|---|---|
+| `model` | Default model (overridden by `-m`) |
+| `ollamaUrl` | Ollama endpoint (overridden by `--ollama-url`) |
+
+The file is optional — if it doesn't exist, the built-in defaults apply. CLI flags always take priority over config values.
+
 ## Design principles
 
 - **stdout is sacred** — only LLM output goes to stdout; status and errors go to stderr so pipes stay clean

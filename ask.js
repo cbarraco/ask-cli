@@ -5,6 +5,26 @@
  */
 
 import { parseArgs } from 'node:util';
+import { readFileSync } from 'node:fs';
+import { homedir } from 'node:os';
+import { join } from 'node:path';
+
+// ── Config file ────────────────────────────────────────────────────────────────
+
+function loadConfig() {
+  const configPath = join(homedir(), '.ask-cli', 'config.json');
+  try {
+    const raw = readFileSync(configPath, 'utf8');
+    return JSON.parse(raw);
+  } catch (err) {
+    if (err.code !== 'ENOENT') {
+      process.stderr.write(`ask: warning: could not read config at ${configPath}: ${err.message}\n`);
+    }
+    return {};
+  }
+}
+
+const config = loadConfig();
 
 // ── Arg parsing ────────────────────────────────────────────────────────────────
 
@@ -12,12 +32,12 @@ const { values: args, positionals } = parseArgs({
   allowPositionals: true,
   options: {
     prompt:       { type: 'string',  short: 'p' },
-    model:        { type: 'string',  short: 'm', default: 'gemma4:latest' },
+    model:        { type: 'string',  short: 'm', default: config.model ?? 'gemma4:latest' },
     format:       { type: 'string',  short: 'f', default: 'text' },
     system:       { type: 'string',  short: 's' },
     temperature:  { type: 'string',  short: 't', default: '0.1' },
     raw:          { type: 'boolean',             default: false },
-    'ollama-url': { type: 'string',              default: 'http://localhost:11434' },
+    'ollama-url': { type: 'string',              default: config.ollamaUrl ?? 'http://localhost:11434' },
     help:         { type: 'boolean', short: 'h', default: false },
     version:      { type: 'boolean', short: 'v', default: false },
   },
@@ -48,6 +68,10 @@ Options:
       --ollama-url    Ollama base URL       (default: http://localhost:11434)
   -h, --help          Show this help
   -v, --version       Show version
+
+Config file (~/.ask-cli/config.json):
+  { "model": "gemma4:latest", "ollamaUrl": "http://localhost:11434" }
+  CLI flags override config values.
 
 Examples:
   cat bank.json | ask -p "extract food transactions" | ask -p "sum by merchant"
