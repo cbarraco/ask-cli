@@ -54,100 +54,26 @@ The file is optional — if it doesn't exist, the built-in defaults apply. CLI f
 
 ## Examples
 
-### Finance
-
 ```bash
-# Extract food transactions, then total by merchant
-cat bank-transactions.json \
-  | ask -p "extract all food and restaurant transactions" -f json \
-  | ask -p "create a total for each merchant" -f json
+# Review a diff before merging
+git diff main | ask -p "review this diff for bugs, security issues, and unintended side effects"
 
-# Find largest expenses this month
-cat transactions.csv | ask -p "find the 5 largest transactions and explain each one"
-```
+# Generate a commit message from staged changes
+git diff --staged | ask -p "write a concise git commit message for these changes"
 
-### DevOps
-
-```bash
-# Which pods are crash-looping? Generate fix commands and run them.
+# Chain models: find crash-looping pods, generate delete commands, run them
 kubectl get pods -o json \
   | ask -p "which pods are in CrashLoopBackOff?" \
   | ask -p "generate kubectl delete commands for each" \
   | sh
 
-# Summarize recent deployment events
-kubectl get events --sort-by='.lastTimestamp' -o json \
-  | ask -p "summarize any warnings or failures in plain English"
+# Extract transactions, then summarize by merchant
+cat bank-transactions.json \
+  | ask -p "extract all food and restaurant transactions" -f json \
+  | ask -p "create a total for each merchant" -f json
 
-# Check resource pressure
-kubectl top nodes | ask -p "which nodes are above 80% CPU or memory?"
-```
-
-### Security
-
-```bash
-# Spot suspicious SSH activity in today's logs
-journalctl --since today | ask -p "find suspicious SSH login attempts, include source IPs and usernames"
-
-# Group and count by attacker IP
-journalctl --since today \
-  | ask -p "find failed SSH attempts" \
-  | ask -p "group by source IP and count attempts, sort descending" -f json
-
-# Review a diff before merging
-git diff main | ask -p "review this diff for bugs, security issues, and unintended side effects"
-```
-
-### Data wrangling
-
-```bash
-# Find inventory gaps
-cat inventory.csv | ask -p "find all devices without a DHCP reservation" -f csv
-
-# Normalize inconsistent data
-cat contacts.csv | ask -p "standardize all phone numbers to E.164 format" -f csv
-
-# Cross-reference two files
-cat products.json | ask -p "which of these products are missing from the price list below" \
-  -s "$(cat price-list.txt)"
-```
-
-### Code
-
-```bash
-# Explain a file
-cat src/auth.ts | ask -p "explain what this file does in 3 bullet points"
-
-# Generate a commit message from staged changes
-git diff --staged | ask -p "write a concise git commit message for these changes"
-
-# Find potential issues in a script
-cat deploy.sh | ask -p "what could go wrong when this script runs in production?"
-```
-
-### Home automation
-
-```bash
-# Decide whether a Frigate camera event is worth a notification
-mosquitto_sub -t frigate/events -C 1 \
-  | ask -p "is this camera event worth notifying the homeowner? Reply yes or no and one sentence why."
-
-# Summarize today's motion events
-mosquitto_sub -t frigate/events -C 50 \
-  | ask -p "summarize the activity captured today by camera location"
-```
-
-### Chaining with traditional tools
-
-```bash
-# LLM output feeds grep, awk, jq as normal
+# Mix with traditional tools
 cat access.log | ask -p "extract all 5xx error lines" | grep -v "healthcheck"
-
-# Mix ask with jq
-cat api-response.json | jq '.items[]' | ask -p "which of these are expired?" -f json | jq length
-
-# Use model output as shell commands (review first!)
-cat report.txt | ask -p "write a bash one-liner to archive files older than 30 days"
 ```
 
 ## Format flag
