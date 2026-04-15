@@ -67,13 +67,11 @@ kubectl get pods -o json \
   | ask -p "generate kubectl delete commands for each" \
   | sh
 
-# Extract transactions, then summarize by merchant
-cat bank-transactions.json \
-  | ask -p "extract all food and restaurant transactions" -f json \
-  | ask -p "create a total for each merchant" -f json
-
 # Mix with traditional tools
 cat access.log | ask -p "extract all 5xx error lines" | grep -v "healthcheck"
+
+# Generate summaries
+cat README.md | ask -p "What does this program do?"
 ```
 
 ## Format flag
